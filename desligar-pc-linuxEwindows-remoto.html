@@ -1,0 +1,161 @@
+<html>
+<meta charset="utf-8">
+
+<style>
+
+body{
+    margin:0;
+    background:#000;
+    color:#00ffff;
+    font-family:Arial;
+}
+
+#demo{
+    padding:20px;
+    white-space:pre-line;
+}
+
+.card{
+    border:1px solid cyan;
+    padding:15px;
+    margin-bottom:15px;
+    border-radius:12px;
+    background:rgba(0,255,255,0.05);
+}
+
+h2{
+    color:cyan;
+}
+
+</style>
+
+<div id="demo"></div>
+
+<script>
+
+const demo =
+document.getElementById("demo");
+
+//////////////////////////////////////////////////////
+// TÍTULO
+//////////////////////////////////////////////////////
+
+demo.innerHTML += `
+<h2>⚛ JARVIS NETWORK ADMIN PANEL</h2>
+`;
+
+//////////////////////////////////////////////////////
+// WINDOWS REMOTO
+//////////////////////////////////////////////////////
+
+demo.innerHTML += `
+<div class="card">
+<b>🟦 WINDOWS REMOTO (PowerShell REAL)</b><br><br>
+
+✔ Desligar PC remoto:<br>
+Stop-Computer -ComputerName 192.168.1.50 -Force<br><br>
+
+✔ Reiniciar PC remoto:<br>
+Restart-Computer -ComputerName 192.168.1.50 -Force<br><br>
+
+✔ Requisitos:<br>
+Enable-PSRemoting -Force<br>
+(Get-Item WSMan:\\localhost\\Client\\TrustedHosts)<br>
+</div>
+`;
+
+//////////////////////////////////////////////////////
+// WINDOWS LEGACY
+//////////////////////////////////////////////////////
+
+demo.innerHTML += `
+<div class="card">
+<b>🟦 WINDOWS LEGACY (CMD)</b><br><br>
+
+✔ Shutdown remoto:<br>
+shutdown /m \\\\192.168.1.50 /s /t 0<br><br>
+
+✔ Restart remoto:<br>
+shutdown /m \\\\192.168.1.50 /r /t 0<br><br>
+
+✔ Nota:<br>
+Precisa SMB + permissões admin + firewall aberto
+</div>
+`;
+
+//////////////////////////////////////////////////////
+// LINUX SSH
+//////////////////////////////////////////////////////
+
+demo.innerHTML += `
+<div class="card">
+<b>🟩 LINUX REMOTO (SSH REAL)</b><br><br>
+
+✔ Desligar:<br>
+ssh user@192.168.1.50 "sudo shutdown now"<br><br>
+
+✔ Reiniciar:<br>
+ssh user@192.168.1.50 "sudo reboot"<br><br>
+
+✔ Processos:<br>
+ssh user@192.168.1.50 "top"
+</div>
+`;
+
+//////////////////////////////////////////////////////
+// SCANNER DE REDE (REAL LIMITAÇÃO + SIMULAÇÃO INTELIGENTE)
+//////////////////////////////////////////////////////
+
+demo.innerHTML += `
+<div class="card">
+<b>🌐 IP SCANNER (REALIDADE DO BROWSER)</b><br><br>
+
+❌ Browser NÃO pode varrer rede diretamente<br>
+✔ Mas podemos simular e testar hosts conhecidos<br><br>
+</div>
+`;
+
+async function fakeScan(){
+
+    let base = "192.168.1.";
+
+    for(let i=1;i<20;i++){
+
+        let ip = base + i;
+
+        demo.innerHTML += `Testando ${ip} ...<br>`;
+
+        await new Promise(r=>setTimeout(r,150));
+
+    }
+
+    demo.innerHTML += `<br>✔ Scan completo (limitação browser)<br>`;
+}
+
+fakeScan();
+
+//////////////////////////////////////////////////////
+// EXPLICAÇÃO REAL
+//////////////////////////////////////////////////////
+
+demo.innerHTML += `
+<div class="card">
+<b>⚠ IMPORTANTE (REALIDADE TÉCNICA)</b><br><br>
+
+✔ Estes comandos são REAIS e funcionam no terminal<br>
+❌ Mas NÃO podem ser executados direto no HTML<br><br>
+
+Browser NÃO tem acesso a:<br>
+- rede local profunda<br>
+- PowerShell<br>
+- SSH<br>
+- system commands<br><br>
+
+👉 Para execução real precisas de:<br>
+Node.js / PowerShell / SSH client / Electron
+</div>
+`;
+
+</script>
+
+</html>
