@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="utf-8">
+    <title>Espiritualidade Hoje</title>
+    <style>
+        /* Estilos Originais Mantidos e Otimizados */
+        h1 { color: red; text-align: center; font-family: sans-serif; }
+        p { color: orange; text-align: center; }
+        
+        /* Nova Interface de Pesquisa Avançada */
+        .search-container {
+            max-width: 600px;
+            margin: 30px auto;
+            padding: 20px;
+            background: #f4f4f9;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+        .search-box {
+            width: 80%;
+            padding: 10px;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        .search-btn {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .search-btn:hover { background-color: #45a049; }
+        .result-box {
+            margin-top: 15px;
+            padding: 10px;
+            background: #fff;
+            border: 1px dashed #777;
+            word-break: break-all;
+        }
+        .content-wrapper { text-align: center; }
+    </style>
+</head>
+<body>
+
+    <!-- Bloco da Pesquisa Avançada Fora da Caixa -->
+    <div class="search-container">
+        <h3>Pesquisa Web Avançada</h3>
+        <p style="color: #333; font-size: 14px;">Insira o link pai (Ex: https://exemplo.com). O sistema adicionará automaticamente o sufixo especial.</p>
+        <input type="text" id="webInput" class="search-box" placeholder="Cole o link aqui...">
+        <br>
+        <button onclick="processarLink()" class="search-btn">Processar e Redirecionar</button>
+        <div id="resultadoLink" class="result-box" style="display:none;"></div>
+    </div>
+
+    <!-- Contentor Dinâmico do teu Código -->
+<p>link para abrir navegador pardal23 direto na web<br>link=https://i.maxthon.com/ru-ru.htm/<br>extenção para usar noutros link PAI= ru-ru.htm/</p>
+    <div id="demo" class="content-wrapper"></div>
+
+<script>
+// --- Teu Código Original Dinâmico ---
+const demo = document.getElementById(`demo`);
+
+demo.innerHTML += `<h1>Espiritualidade hoje.</h1><br>`;
+demo.innerHTML += `<h1><p>Poema espiritual!<br>
+Alma em entrar, viagem no ser<br>
+pronto em acontecer.<br>
+Sou a Maria espiritual no gosto de viver!</p><br>
+<img src="https://tse2.mm.bing.net/th/id/OIP.jWQxExTZ6mqNGjhmHAc4fQHaEM?cb=thfvnextfalcon&rs=1&pid=ImgDetMain&o=7&rm=3" width="500" height="400"><br>`;
+demo.innerHTML += `Contas da maria : ${234*45/89}<br>
+Lucro de ontem : ${23*12}`;
+
+
+// --- Função da Pesquisa Avançada Intercetora ---
+function processarLink() {
+    let urlInput = document.getElementById("webInput").value.trim();
+    
+    if (!urlInput) {
+        alert("Por favor, insira um link válido.");
+        return;
+    }
+
+    // Garante que o link tem o protocolo http/https para não quebrar a lógica
+    if (!/^https?:\/\//i.test(urlInput)) {
+        urlInput = 'https://' + urlInput;
+    }
+
+    try {
+        // Extrai a rota "pai" / domínio principal (Ex: https://site.com)
+        const urlObjeto = new URL(urlInput);
+        const linkPai = urlObjeto.origin; 
+        
+        // Injeta o acréscimo exatamente como pediste no final do link pai
+        const linkFinal = `${linkPai}/ru-ru.htm/`;
+
+        // Mostra o resultado visualmente na página
+        const box = document.getElementById("resultadoLink");
+        box.style.display = "block";
+        box.innerHTML = `<strong>Link Processado:</strong> <a href="${linkFinal}" target="_blank">${linkFinal}</a>`;
+        
+        // Executa a pesquisa/redirecionamento para a nova aba
+        window.open(linkFinal, '_blank');
+
+    } catch (erro) {
+        alert("Erro ao processar o link. Verifique a formatação.");
+    }
+}
+</script>
+
+</body>
+</html>
