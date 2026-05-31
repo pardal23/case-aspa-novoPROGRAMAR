@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        h1 {
+            color: #FF00FF;
+            text-align: center;
+        }
+
+        p {
+            color: #FF0000;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .content-box {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        input {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            width: 250px;
+        }
+
+        .media-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="demo"></div>
+
+<div class="content-box">
+    <input
+        type="text"
+        id="chave"
+        placeholder="Digite a palavra secreta..."
+        autofocus
+        autocomplete="off"
+        spellcheck="false">
+</div>
+
+<div id="resposta"></div>
+
+<script>
+const demo = document.getElementById('demo');
+const resposta = document.getElementById('resposta');
+const chaveInput = document.getElementById('chave');
+
+demo.innerHTML = `
+    <h1>
+        Faz uma conta 23 * 23<br>
+        Mostra a minha foto preferida<br>
+        e musica da minha alma.
+    </h1>
+`;
+
+function aguardarPalavraSecreta() {
+    return new Promise((resolve) => {
+        chaveInput.addEventListener('input', function handler(e) {
+            if (e.target.value === 'cegonha23') {
+
+                chaveInput.disabled = true;
+                chaveInput.removeEventListener('input', handler);
+
+                resolve({
+                    conta: 23 * 23,
+                    foto: "https://images.impresa.pt/sicnot/2025-02-25-geracao_60_1920_1280.jpg-6bf9e483-1/1.91x1?wm=true&outputFormat=jpeg",
+                    video: "https://www.youtube.com/embed/8tE0GjSQpes?list=RD8tE0GjSQpes"
+                });
+            }
+        });
+    });
+}
+
+async function iniciarFluxo() {
+    const dados = await aguardarPalavraSecreta();
+
+    resposta.innerHTML = `
+        <p>Resposta: ${dados.conta}</p>
+
+        <div class="media-container">
+            <img
+                src="${dados.foto}"
+                width="500"
+                height="400"
+                alt="Foto Preferida">
+
+            <br>
+
+            <iframe
+                width="100%"
+                height="300"
+                src="${dados.video}"
+                title="ABBA - The Winner Takes It All (1980)"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin"
+                allowfullscreen>
+            </iframe>
+        </div>
+    `;
+}
+
+iniciarFluxo();
+</script>
+
+</body>
+</html>
