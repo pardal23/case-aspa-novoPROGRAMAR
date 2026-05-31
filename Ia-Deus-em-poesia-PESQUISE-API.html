@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Espiritualidade e Conhecimento Real</title>
+
+<style>
+body{
+    background:#0b0f19;
+    color:#fff;
+    font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;
+    text-align:center;
+    padding:20px;
+}
+
+h1{color:#ff4757;}
+h2{color:#2ed573;margin-top:30px;}
+
+p{
+    color:#ffa502;
+    font-size:1.1rem;
+}
+
+.container{
+    max-width:800px;
+    margin:auto;
+    background:#1e272e;
+    padding:20px;
+    border-radius:15px;
+    box-shadow:0 4px 15px rgba(0,0,0,.5);
+}
+
+input[type=text],
+input[type=password]{
+    padding:10px;
+    width:60%;
+    border:none;
+    border-radius:5px;
+    margin:10px 0;
+    font-size:1rem;
+    background:#2f3542;
+    color:#fff;
+}
+
+#resultados{
+    margin-top:20px;
+    padding:15px;
+    background:#2f3542;
+    border-left:5px solid #1e90ff;
+    border-radius:8px;
+    text-align:left;
+    display:none;
+}
+
+.loading{
+    color:#eccc68;
+}
+
+#escolhas{
+    display:flex;
+    justify-content:center;
+    gap:20px;
+    margin-top:20px;
+    flex-wrap:wrap;
+}
+
+.opcao{
+    background:#1e90ff;
+    color:#fff;
+    padding:15px 25px;
+    border-radius:10px;
+    cursor:pointer;
+    transition:.3s;
+    font-weight:bold;
+    min-width:180px;
+}
+
+.opcao:hover{
+    background:#2ed573;
+    transform:scale(1.05);
+}
+
+.poesia{
+    margin-top:20px;
+    background:#1b2330;
+    padding:15px;
+    border-radius:10px;
+    border-left:5px solid #2ed573;
+}
+
+.poesia img{
+    border-radius:10px;
+    margin:10px 0;
+    box-shadow:0 4px 8px rgba(0,0,0,.4);
+}
+</style>
+</head>
+
+<body>
+
+<div class="container" id="demo"></div>
+
+<script>
+
+const demo = document.getElementById("demo");
+
+demo.innerHTML += `
+<h1>Espiritualidade hoje.</h1>
+
+<p>
+Poema espiritual!<br>
+Alma em entrar, viagem no ser<br>
+pronto em acontecer.<br>
+Sou a Maria espiritual no gosto de viver!
+</p>
+
+<img
+src="https://picsum.photos/500/300"
+width="500"
+height="300"
+style="border-radius:10px;max-width:100%;box-shadow:0 4px 8px rgba(0,0,0,.3);">
+
+<br><br>
+
+Contas da Maria: ${(234*45/89).toFixed(2)}<br>
+Lucro de ontem: ${23*12}<br><br>
+
+<hr style="border:.5px solid #4b5563;">
+
+<h2>Faça a sua pesquisa real louca mas insira a passe</h2>
+
+<input
+type="password"
+id="passwordInput"
+placeholder="Insira a palavra-passe aqui...">
+
+<br>
+
+<input
+type="text"
+id="searchQuery"
+placeholder="Ex: inteligência artificial, evolução humana...">
+
+<div id="escolhas">
+
+    <div class="opcao" data-browser="duck">
+        🦆 DuckDuckGo
+    </div>
+
+    <div class="opcao" data-browser="maxthon">
+        🌐 Maxthon
+    </div>
+
+</div>
+
+<div id="resultados"></div>
+`;
+
+function apiDeusEmPoesia(tema){
+
+    return `
+    <div class="poesia">
+
+        <h2>📜 Deus em Poesia</h2>
+
+        <img
+        src="https://picsum.photos/200/150"
+        width="200"
+        height="150">
+
+        <p>
+
+        Deus caminha no silêncio das estrelas,<br>
+        escrevendo luz onde existem sombras.<br><br>
+
+        Em <b>${tema}</b> existe um mistério,<br>
+        uma porta invisível para o eterno.<br><br>
+
+        O vento transporta mensagens antigas,<br>
+        e a alma reconhece a voz da criação.<br><br>
+
+        Cada passo é uma semente de esperança,<br>
+        cada sonho uma centelha do infinito.<br><br>
+
+        Deus habita na verdade, no amor,<br>
+        na coragem de continuar a procurar.<br><br>
+
+        Que <b>${tema}</b> seja caminho,<br>
+        ponte, luz e transformação.<br><br>
+
+        ✨🙏✨
+
+        </p>
+
+    </div>
+    `;
+}
+
+const resultado = document.getElementById("resultados");
+
+document.addEventListener("mouseover",function(e){
+
+    const opcao = e.target.closest(".opcao");
+
+    if(!opcao) return;
+
+    const password =
+    document.getElementById("passwordInput").value.trim();
+
+    const pesquisa =
+    document.getElementById("searchQuery").value.trim();
+
+    resultado.style.display = "block";
+
+    if(password !== "cegonha23"){
+        resultado.innerHTML =
+        "<span style='color:#ff4757'>❌ Palavra-passe incorreta.</span>";
+        return;
+    }
+
+    if(!pesquisa){
+        resultado.innerHTML =
+        "<span style='color:#ff4757'>⚠️ Introduza algo para pesquisar.</span>";
+        return;
+    }
+
+    const poesia = apiDeusEmPoesia(pesquisa);
+
+    let url = "";
+
+    if(opcao.dataset.browser === "duck"){
+
+        url =
+        `https://duckduckgo.com/?q=${encodeURIComponent(pesquisa)}`;
+
+        resultado.innerHTML =
+        `
+        <b>✅ Pesquisa:</b> ${pesquisa}
+        ${poesia}
+        `;
+    }
+
+    if(opcao.dataset.browser === "maxthon"){
+
+        url = "https://i.maxthon.com/ru-ru.htm/";
+
+        resultado.innerHTML =
+        `
+        <b>✅ Maxthon selecionado.</b>
+        ${poesia}
+        `;
+    }
+
+    window.open(url,"_blank");
+});
+</script>
+
+</body>
+</html>
