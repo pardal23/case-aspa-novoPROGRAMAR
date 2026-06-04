@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gadget Universal SEO - Blog</title>
+  <style>
+    /* Base de estilo com tema via CSS variables */
+    .ugsg-wrap {
+      font-family: Inter, system-ui, -apple-system, Arial, sans-serif;
+      max-width: 420px;
+      border: 1px solid var(--border, #e2e8f0);
+      border-radius: 12px;
+      padding: 12px;
+      background: var(--bg, #fff);
+      color: var(--text, #111);
+      box-shadow: 0 1px 3px rgba(0,0,0,.05);
+      margin: 8px;
+    }
+    .ugsg-title { font-size: 18px; margin: 0 0 6px; }
+    .ugsg-title a { color: var(--link, #1a0dab); text-decoration: none; }
+    .ugsg-desc { color: var(--text, #555); font-size: 14px; margin: 0 0 8px; }
+
+    .ugsg-posts { margin: 6px 0 8px; padding-left: 0; }
+    .ugsg-posts ul { margin: 0; padding: 0; list-style: none; }
+    .ugsg-posts li { margin: 6px 0; }
+    .ugsg-posts a { color: var(--link, #1a0dab); text-decoration: none; }
+    .ugsg-excerpt { font-size: 12px; color: var(--text, #555); margin-top: 4px; }
+
+    .ugsg-actions { display: flex; gap: 8px; align-items: center; margin-top: 6px; flex-wrap: wrap; }
+    .ugsg-btn { background: var(--button, #1a73e8); color: #fff; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; }
+    .ugsg-btn:hover { background: var(--buttonHover, #166bd0); }
+
+    .ugsg-ticker { font-size: 12px; color: var(--ticker, #555); margin-top: 6px; }
+
+    /* Temas disponíveis (via classe no wrapper) */
+    .theme-azul  { --bg: #ffffff; --border: #e2e8f0; --text: #111; --link: #1a0dab; --button: #1a73e8; --buttonHover: #166bd0; --ticker: #555; }
+    .theme-verde { --bg: #ffffff; --border: #d4f0d4; --text: #163a2f; --link: #0f6c3a; --button: #16a34a; --buttonHover: #128a3a; --ticker: #365c50; }
+    .theme-roxo  { --bg: #fff; --border: #d8c7f7; --text: #251a3b; --link: #4b1a8a; --button: #7c3aed; --buttonHover: #6b2bd0; --ticker: #4a2c5c; }
+    .theme-laranja{ --bg: #fffaf0; --border: #ffd9b3; --text: #4b2b0a; --link: #b45309; --button: #f59e0b; --buttonHover: #d97706; --ticker: #7a4a14; }
+
+    /* Pequenos ajustes para visual limpa em mobile */
+    @media (max-width: 520px) {
+      .ugsg-wrap { width: 100%; max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <h2>Gadget Universal SEO (HTML + JS único)</h2>
+
+  <!-- Exemplo 1: Blogger (default) -->
+  <div class="universal-seo-gadget"
+       data-blog-name="Poesias da Alma"
+       data-blog-url="https://poesiasdaalma23.blogspot.com"
+       data-blog-desc="Coleção de poesias, pensamentos e reflexões."
+       data-max-results="5"
+       data-theme="azul"
+       ></div>
+
+  <!-- Exemplo 2: API externa JSONPlaceholder -->
+  <div class="universal-seo-gadget"
+       data-blog-name="JSONPlaceholder - Posts"
+       data-blog-url="https://jsonplaceholder.typicode.com"
+       data-blog-desc="Exemplo de posts via API externa."
+       data-api-url="https://jsonplaceholder.typicode.com/posts"
+       data-api-per-page="5"
+       data-theme="verde"
+       ></div>
+
+  <!-- Exemplo 3: API externa DummyJSON -->
+  <div class="universal-seo-gadget"
+       data-blog-name="DummyJSON - Posts"
+       data-blog-url="https://dummyjson.com"
+       data-blog-desc="Exemplo de posts via API DummyJSON."
+       data-api-url="https://dummyjson.com/posts"
+       data-api-per-page="6"
+       data-theme="roxo"
+       ></div>
+
+  <script>
+  (function(){
+    // Encontra todos os gadgets na página
+    const gadgets = Array.from(document.querySelectorAll('.universal-seo-gadget'));
+
+    // Helpers comuns
+    function addPostItem(container, postsUl, title, link, excerpt){
+      const li = document.createElement('li');
+      li.innerHTML = `<a href="${link}" target="_blank" rel="noopener">${title}</a>`;
+      if (excerpt && excerpt.trim()) {
+        const ex = document.createElement('div');
+        ex.className = 'ugsg-excerpt';
+        ex.textContent = excerpt;
+        li.appendChild(ex);
+      }
+      postsUl.appendChild(li);
+    }
+
+    function createLoader(container, idx, themeClass) {
+      // Cria wrapper com tema aplicado
+      const wrap = document.createElement('div');
+      wrap.className = 'ugsg-wrap ' + themeClass;
+
+      // Conteúdo interno (sem IDs para evitar conflitos)
+      wrap.innerHTML = `
+        <div class="ugsg-card" aria-label="Promo do blog">
+          <h3 class="ugsg-title"><a href="#" target="_blank" rel="noopener"></a></h3>
+          <p class="ugsg-desc"></p>
+          <div class="ugsg-posts" aria-label="Últimos posts">
+            <ul class="ug-posts"></ul>
+          </div>
+          <button class="ugsg-btn load-more" style="display:none" aria-label="Carregar mais posts">Carregar mais posts</button>
+          <div class="ugsg-actions" aria-label="Ações">
+            <button class="ugsg-btn share">Compartilhar</button>
+            <button class="ugsg-btn copy">Copiar link</button>
+          </div>
+          <div class="ugsg-ticker" aria-live="polite"></div>
+        </div>
+      `;
+      container.appendChild(wrap);
+
+      // Elementos internos
+      const card = wrap.querySelector('.ugsg-card');
+      const titleLink = wrap.querySelector('.ugsg-title a');
+      const descP = wrap.querySelector('.ugsg-desc');
+      const postsUl = wrap.querySelector('.ug-posts');
+      const loadMoreBtn = wrap.querySelector('.load-more');
+      const shareBtn = wrap.querySelector('.share');
+      const copyBtn = wrap.querySelector('.copy');
+      const ticker = wrap.querySelector('.ugsg-ticker');
+      // Inicializa ticker PT-BR
+      const messages = [
+        'Poesias da Alma — reflexões e versos.',
+        'Leia poesias que tocam o coração.',
+        'Novos poemas toda semana.',
+        'Compartilhe este blog com seus amigos.',
+        'Descubra mensagens inspiradoras.'
+      ];
+      let m = 0;
+      ticker.textContent = messages[0];
+      setInterval(function(){ m = (m+1) % messages.length; ticker.textContent = messages[m]; }, 8000);
+
+      // Preenche títulos/descrições iniciais
+      if (titleLink && titleLink.dataset && titleLink.dataset.src) {
+        // não usado, mas mantido para extensões
+      }
+
+      // Retorna objetos úteis
+      return {
+        wrap, card, titleLink, descP, postsUl, loadMoreBtn, shareBtn, copyBtn, ticker
+      };
+    }
+
+    // Para cada gadget, monta o comportamento
+    gadgets.forEach(function(container, gi){
+      const name = container.dataset.blogName || 'Blog';
+      const blogUrl = (container.dataset.blogUrl || '#').replace(/\/+$/, '');
+      const desc = container.dataset.blogDesc || '';
+      const perPage = parseInt(container.dataset.maxResults, 10) || 5;
+      const apiUrl = (container.dataset.apiUrl || '').trim();
+      const apiPerPage = parseInt(container.dataset.apiPerPage, 10) || perPage;
+      const apiKey = (container.dataset.apiKey || '').trim();
+      const theme = (container.dataset.theme || 'azul').toLowerCase();
+
+      const themeClass = theme === 'verde' ? 'theme-verde'
+                        : theme === 'roxo' ? 'theme-roxo'
+                        : theme === 'laranja' ? 'theme-laranja'
+                        : 'theme-azul';
+
+      // Cria o wrapper com tema
+      const g = createLoader(container, gi, themeClass);
+
+      // Define título/descrição
+      g.titleLink.textContent = name;
+      g.titleLink.href = blogUrl;
+      g.titleLink.target = '_blank';
+      g.titleLink.rel = 'noopener';
+      g.descP.textContent = desc;
+
+      // Funções de carregamento
+      function addPostItemsFromArray(items) {
+        items.forEach(function(item){
+          const t = item.title || item.name || 'Post';
+          const lnk = item.link || item.url || blogUrl;
+          const excerpt = item.excerpt || item.body || '';
+          addPostItem(container, g.postsUl, t, lnk, excerpt);
+        });
+      }
+
+      // Blogger (default)
+      let bloggerPage = 1;
+      function loadFromBlogger() {
+        const per = perPage;
+        const feed = blogUrl + '/feeds/posts/default?alt=json&max-results=' + per + '&start-index=' + ((bloggerPage - 1) * per + 1);
+        fetch(feed)
+          .then(res => res.json())
+          .then(data => {
+            const entries = (data && data.feed && data.feed.entry) || [];
+            entries.forEach(function(e){
+              const t = (e.title && e.title.$t) || 'Post';
+              const lnk = (e.link && e.link.find && e.link.find(x => x.rel === 'alternate' ))?.href || blogUrl;
+              const excerpt = (e.summary && e.summary.$t) || '';
+              addPostItem(container, g.postsUl, t, lnk, excerpt);
+            });
+            if (entries.length === per) {
+              bloggerPage += 1;
+              g.loadMoreBtn.style.display = '';
+            } else {
+              g.loadMoreBtn.style.display = 'none';
+            }
+          })
+          .catch(function(){
+            g.loadMoreBtn.style.display = 'none';
+          });
+      }
+
+      // API externa
+      let currentApiPage = 1;
+      function buildApiUrl(base, page, per){
+        if(!base) return null;
+        if (base.includes('jsonplaceholder')) {
+          const sep = base.includes('?') ? '&' : '?';
+          return base + sep + '_page=' + page + '&_limit=' + per;
+        }
+        if (base.includes('dummyjson')) {
+          const skip = (page - 1) * per;
+          const sep = base.includes('?') ? '&' : '?';
+          return base + sep + 'limit=' + per + '&skip=' + skip;
+        }
+        const sep = base.includes('?') ? '&' : '?';
+        return base + sep + 'page=' + page + '&perPage=' + per;
+      }
+      function mapFromApi(p){
+        const t = p.title || p.name || p.headline || 'Post';
+        let link = p.url || p.link;
+        if(!link && p.links){
+          if (Array.isArray(p.links)) {
+            const f = p.links.find(l => l.rel === 'alternate' && l.href);
+            if (f) link = f.href;
+          }
+        }
+        if(!link && p.id){
+          const id = String(p.id);
+          if (id && blogUrl.includes('jsonplaceholder')) link = 'https://jsonplaceholder.typicode.com/posts/' + id;
+          if (id && blogUrl.includes('dummyjson')) link = 'https://dummyjson.com/posts/' + id;
+        }
+        if(!link) link = blogUrl;
+        const excerpt = p.excerpt || p.body || p.summary || '';
+        return { title: t, link, excerpt };
+      }
+      function loadFromApi() {
+        const base = apiUrl;
+        const apiUrlFull = buildApiUrl(base, currentApiPage, apiPerPage);
+        fetch(apiUrlFull)
+          .then(res => res.json())
+          .then(data => {
+            let posts = [];
+            if (Array.isArray(data)) posts = data;
+            else if (Array.isArray(data.posts)) posts = data.posts;
+            else if (data.posts && Array.isArray(data.posts)) posts = data.posts;
+            else if (data.items && Array.isArray(data.items)) posts = data.items;
+            else if (data.title || data.name) posts = [data];
+
+            posts.forEach(function(p){
+              const m = mapFromApi(p);
+              addPostItem(container, g.postsUl, m.title, m.link, m.excerpt);
+            });
+
+            const hasMore = posts.length === apiPerPage;
+            if (hasMore) { currentApiPage += 1; g.loadMoreBtn.style.display = ''; } else { g.loadMoreBtn.style.display = 'none'; }
+          })
+          .catch(function(){ g.loadMoreBtn.style.display = 'none'; });
+      }
+
+      // Inicializa: se houver API, usa API; senão, Blogger
+      if (apiUrl) {
+        // API externa
+        loadFromApi();
+      } else {
+        // Blogger
+        loadFromBlogger();
+      }
+
+      // Botão Carregar mais
+      g.loadMoreBtn.addEventListener('click', function(){
+        if (apiUrl) {
+          loadFromApi();
+        } else {
+          loadFromBlogger();
+        }
+      });
+
+      // Botões de compartilhar/copiar
+      function handleShareCopy(action){
+        const data = { title: name, text: 'Confira o blog: ' + name, url: blogUrl };
+        if (action === 'share' && navigator.share){
+          navigator.share(data).catch(function(){});
+        } else {
+          navigator.clipboard.writeText(blogUrl).then(function(){
+            alert('Link copiado para a área de transferência');
+          }).catch(function(){});
+        }
+      }
+      g.wrap.querySelector('.share')?.addEventListener('click', function(){ handleShareCopy('share'); });
+      g.wrap.querySelector('.copy')?.addEventListener('click', function(){ handleShareCopy('copy'); });
+    });
+  })();
+  </script>
+<h2 style="color:red;">https://uugpt.com/chat<br>Entre no seu novo chat IA UUGTP.COM</h2>
+</body>
+</html>
